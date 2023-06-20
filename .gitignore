@@ -1,0 +1,9 @@
+.vs/
+obj/
+bin/
+node_modules/
+Logs/
+Data/
+src/Umbraco.Community.Fallback.Testsite/wwwroot/media/
+
+*.suo
