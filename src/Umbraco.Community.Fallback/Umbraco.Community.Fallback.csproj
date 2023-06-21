@@ -21,7 +21,4 @@
     <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.4.0" />
   </ItemGroup>
 
-  <ItemGroup>
-  </ItemGroup>
-
 </Project>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using HandlebarsDotNet;
+using Umbraco.Community.Fallback;
 using Wholething.FallbackTextProperty.Extensions;
 using Wholething.FallbackTextProperty.Services.Models;
 #if NET5_0_OR_GREATER
@@ -224,8 +225,10 @@ namespace Wholething.FallbackTextProperty.Services.Impl
 
         private string GetTemplate(object configuration)
         {
-            var template = (string)((Dictionary<string, object>)configuration)["fallbackTemplate"];
-            return template;
+            var config = (Dictionary<string, object>)configuration;
+            if (config.TryGetValue(FallbackConfigurationEditor.FallbackKey, out var template))
+               return template as string ?? "";
+            return "";
         }
 
         private Dictionary<string, IPublishedContent> GetAllReferencedNodes(string template, IPublishedElement owner)
