@@ -59,7 +59,7 @@ public class FallbackConfigurationEditor : ConfigurationEditor
             Key = FallbackKey,
             Name = localizedTextService.Localize(LocalizationAreaKey, "labelFallback"),
             Description = localizedTextService.Localize(LocalizationAreaKey, "descriptionFallback"),
-            View = FallbackEditor.DefaultInnerViewPath // TODO: Ace!!
+            View = "/App_Plugins/Umbraco.Community.Fallback/fallback-config.html"
         });
     }
 

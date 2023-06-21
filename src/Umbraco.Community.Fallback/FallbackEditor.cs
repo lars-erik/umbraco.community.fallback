@@ -5,7 +5,6 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Strings;
-using Wholething.FallbackTextProperty.Services;
 
 namespace Umbraco.Community.Fallback;
 
@@ -22,7 +21,6 @@ public class FallbackEditor : IDataEditor
     private readonly IDataTypeService dataTypeService;
     private readonly IShortStringHelper shortStringHelper;
     private readonly IJsonSerializer jsonSerializer;
-    private readonly IFallbackService parsingService;
     private readonly IHttpContextAccessor httpContextAccessor;
     private IDataValueEditor innerEditor;
     private ShadowEditor shadowedEditor;
@@ -33,7 +31,6 @@ public class FallbackEditor : IDataEditor
         IDataTypeService dataTypeService,
         IShortStringHelper shortStringHelper,
         IJsonSerializer jsonSerializer,
-        IFallbackService parsingService,
         IDataValueEditorFactory dataValueEditorFactory, 
         IHttpContextAccessor httpContextAccessor,
         EditorType type = EditorType.PropertyValue
@@ -44,7 +41,6 @@ public class FallbackEditor : IDataEditor
         this.dataTypeService = dataTypeService;
         this.shortStringHelper = shortStringHelper;
         this.jsonSerializer = jsonSerializer;
-        this.parsingService = parsingService;
         this.httpContextAccessor = httpContextAccessor;
     }
 
