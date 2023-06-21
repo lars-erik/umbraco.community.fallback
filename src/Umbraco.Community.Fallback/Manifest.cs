@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core;
@@ -14,7 +15,9 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Services.Implement;
 using Umbraco.Cms.Core.Strings;
 using Umbraco.Extensions;
+using Wholething.FallbackTextProperty.Services;
 using static Umbraco.Cms.Core.Constants;
+using static Umbraco.Cms.Core.Constants.Conventions;
 using DataType = Umbraco.Cms.Core.Models.DataType;
 
 namespace Umbraco.Community.Fallback
@@ -59,6 +62,7 @@ namespace Umbraco.Community.Fallback
         const string DataEditorAlias = "Umbraco.Community.FallbackProperty";
         const string DataEditorName = "Fallback Property";
         public const string DefaultInnerViewPath = "readonlyvalue";
+        public const string PreviewPath = "/App_Plugins/Umbraco.Community.Fallback/fallback-preview.html";
         const string DataEditorIcon = "icon-user";
 
         private readonly PropertyEditorCollection propertyEditors;
@@ -66,6 +70,8 @@ namespace Umbraco.Community.Fallback
         private readonly IDataTypeService dataTypeService;
         private readonly IShortStringHelper shortStringHelper;
         private readonly IJsonSerializer jsonSerializer;
+        private readonly IFallbackService parsingService;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private IDataValueEditor innerEditor;
         private ShadowEditor shadowedEditor;
 
@@ -75,7 +81,9 @@ namespace Umbraco.Community.Fallback
             IDataTypeService dataTypeService,
             IShortStringHelper shortStringHelper,
             IJsonSerializer jsonSerializer,
+            IFallbackService parsingService,
             IDataValueEditorFactory dataValueEditorFactory, 
+            IHttpContextAccessor httpContextAccessor,
             EditorType type = EditorType.PropertyValue
         )
         {
@@ -84,6 +92,8 @@ namespace Umbraco.Community.Fallback
             this.dataTypeService = dataTypeService;
             this.shortStringHelper = shortStringHelper;
             this.jsonSerializer = jsonSerializer;
+            this.parsingService = parsingService;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public string Name => DataEditorName;
@@ -104,7 +114,7 @@ namespace Umbraco.Community.Fallback
 
         public IConfigurationEditor GetConfigurationEditor()
         {
-            var editor = new FallbackConfigurationEditor(propertyEditors, dataTypeService, localizedTextService, innerEditor);
+            var editor = new FallbackConfigurationEditor(this, propertyEditors, dataTypeService, localizedTextService, innerEditor, httpContextAccessor);
             return editor;
         }
 
@@ -116,7 +126,7 @@ namespace Umbraco.Community.Fallback
                 jsonSerializer)
             {
                 ValueType = ValueTypes.Json,
-                View = DefaultInnerViewPath,
+                View = PreviewPath,
             };
         }
 
@@ -191,27 +201,34 @@ namespace Umbraco.Community.Fallback
 
     public class FallbackConfigurationEditor : ConfigurationEditor
     {
+        private readonly FallbackEditor fallbackEditor;
         private readonly PropertyEditorCollection propertyEditors;
         private readonly IDataTypeService dataTypeService;
         private readonly ILocalizedTextService localizedTextService;
         private readonly IDataValueEditor dataValueEditor;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
         public const string DataTypeKey = "dataType";
+        public const string FallbackKey = "fallbackTemplate";
 
         private const string LocalizationAreaKey = "fallbackProperty";
         private const string InnerViewKey = "fallback-inner-view";
 
         public FallbackConfigurationEditor(
+            FallbackEditor fallbackEditor, 
             PropertyEditorCollection propertyEditors,
             IDataTypeService dataTypeService,
-            ILocalizedTextService localizedTextService, 
-            IDataValueEditor dataValueEditor
+            ILocalizedTextService localizedTextService,
+            IDataValueEditor dataValueEditor,
+            IHttpContextAccessor httpContextAccessor
             )
         {
+            this.fallbackEditor = fallbackEditor;
             this.propertyEditors = propertyEditors;
             this.dataTypeService = dataTypeService;
             this.localizedTextService = localizedTextService;
             this.dataValueEditor = dataValueEditor;
+            this.httpContextAccessor = httpContextAccessor;
 
             Fields.Add(new ConfigurationField
             {
@@ -227,6 +244,14 @@ namespace Umbraco.Community.Fallback
                     {"treeAlias", Trees.DataTypes},
                     {"idType", "id"}
                 }
+            });
+
+            Fields.Add(new ConfigurationField
+            {
+                Key = FallbackKey,
+                Name = localizedTextService.Localize(LocalizationAreaKey, "labelFallback"),
+                Description = localizedTextService.Localize(LocalizationAreaKey, "descriptionFallback"),
+                View = "textarea" // TODO: Ace!!
             });
         }
 
@@ -264,6 +289,14 @@ namespace Umbraco.Community.Fallback
                         config2.Add(InnerViewKey, dataValueEditor.View ?? FallbackEditor.DefaultInnerViewPath);
                     }
 
+                    if (config2 != null && config.ContainsKey(FallbackKey) && !config2.ContainsKey(FallbackKey))
+                    {
+                        config2?.Add(FallbackKey, config[FallbackKey]);
+                    }
+
+                    var ctx = httpContextAccessor.HttpContext;
+                    var qs = ctx?.Request.QueryString;
+
                     return config2!;
                 }
             }
@@ -295,6 +328,12 @@ namespace Umbraco.Community.Fallback
                 if (dataType != null)
                 {
                     editorValues[DataTypeKey] = dataType.Id.ToString();
+
+                    if (propertyEditors.TryGet(dataType.EditorAlias, out var dataEditor) == true)
+                    {
+                        var shadowed = dataEditor.GetValueEditor(dataType.Configuration);
+                        editorValues["fallback-inner-view"] = shadowed?.View ?? FallbackEditor.DefaultInnerViewPath;
+                    }
                 }
             }
 

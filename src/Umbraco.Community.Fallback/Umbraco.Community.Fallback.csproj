@@ -16,8 +16,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="11.4.1" />
-    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.4.1" />
+    <PackageReference Include="Handlebars.Net" Version="2.1.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="11.4.0" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.4.0" />
   </ItemGroup>
 
   <ItemGroup>
