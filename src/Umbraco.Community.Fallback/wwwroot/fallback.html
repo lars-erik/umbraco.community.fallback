@@ -1,8 +1,8 @@
 ﻿<div ng-controller="umbraco.community.fallback.controller">
+    <label>The model</label>
+    <umb-property-editor model="actualModel">
+    </umb-property-editor>
+    <label>The fallback</label>
     <umb-property-editor model="shadowModel">
     </umb-property-editor>
-<pre>
-{{model | json}}
-{{shadowModel | json}}
-</pre>
 </div>
