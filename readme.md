@@ -7,7 +7,7 @@ Fret not, here's the package to solve all your needs.
 
 Here's a short demo:
 
-[Umbraco Community Fallback Property - First Glance](https://youtu.be/01oiT-3QhBg)
+[Umbraco Community Fallback Property - First Glance](https://www.youtube.com/watch?v=01oiT-3QhBg)
 
 A lot of this code is based on
 
