@@ -29,6 +29,7 @@ angular.module('umbraco').controller('umbraco.community.fallback.controller',
             let props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
 
             function evaluate() {
+                fallbackValue = null;
                 if (chain && chain.length) {
                     for (let i = 0; i < chain.length; i++) {
                         let rule = chain[i];

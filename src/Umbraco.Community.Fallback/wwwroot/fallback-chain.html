@@ -16,13 +16,8 @@
                 <div class="flex items-between">
                     <select ng-model="item.value" style="width: 100%;">
                         <optgroup ng-repeat="docType in model.config.properties" label="{{docType.Name}}">
-                            <option ng-repeat="prop in docType.Properties" value="{{docType.Alias + '.' + prop.Alias}}">{{prop.Name}}</option>
+                            <option ng-repeat="prop in docType.Properties" value="{{docType.Alias + '.' + prop.Alias}}">{{prop.Name}} ({{docType.Name}})</option>
                         </optgroup>
-                    </select>
-                    <select ng-model="item.fallback" style="width: 100%; margin-left: 10px;">
-                        <option value="">Self only</option>
-                        <option>Ancestors</option>
-                        <option>Default language</option>
                     </select>
                 </div>
             </div>
@@ -48,7 +43,5 @@
         <span>Add item</span>
         <span class="sr-only">...</span>
     </button>
-    
-    <pre>{{model.value}}</pre>
 
 </div>

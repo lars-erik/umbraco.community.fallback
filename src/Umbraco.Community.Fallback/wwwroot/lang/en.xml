@@ -3,5 +3,9 @@
     <area alias="fallbackProperty">
         <key alias="labelDataType">Data type</key>
         <key alias="descriptionDataType">The data type to wrap</key>
+        <key alias="labelFallbackChain">Fallbacks</key>
+        <key alias="descriptionFallbackChain">The first non blank will be the fallback</key>
+        <key alias="labelFallback">Ultimate fallback</key>
+        <key alias="descriptionFallback">If all else fails, this will be the value</key>
     </area>
 </language>
