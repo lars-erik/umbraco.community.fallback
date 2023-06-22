@@ -1,8 +1,12 @@
-﻿<div ng-controller="umbraco.community.fallback.controller">
-    <label>The model</label>
-    <umb-property-editor model="actualModel">
-    </umb-property-editor>
-    <label>The fallback</label>
-    <umb-property-editor model="shadowModel">
-    </umb-property-editor>
+﻿<div class="fallback-container" ng-controller="umbraco.community.fallback.controller">
+    <div class="actual" ng-show="!fallback">
+        <umb-property-editor model="actualModel">
+        </umb-property-editor>
+    </div>
+    <div style="background-color: white; opacity: .5; cursor: pointer;" ng-show="fallback" ng-click="edit($event)">
+        <ng-form inert class="umb-group-builder__property-preview-form" name="propertyEditorPreviewForm" umb-disable-form-validation tabindex="-1">
+            <umb-property-editor model="shadowModel">
+            </umb-property-editor>
+        </ng-form>
+    </div>
 </div>

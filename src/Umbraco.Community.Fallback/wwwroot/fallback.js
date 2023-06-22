@@ -18,15 +18,28 @@ angular.module('umbraco').controller('umbraco.community.fallback.controller',
             let elementScope = angularHelper.traverseScopeChain(scope, s => s.hasOwnProperty('content'));
             let content = elementScope.content;
 
+            let fallbackValue = null;
+            let values = [];
+            let props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
+
+            scope.edit = function(evt) {
+                scope.fallback = false;
+                let target = evt.target;
+                setTimeout(() => {
+                        let actual = target.closest('.fallback-container').querySelector('.actual');
+                        let firstInput = actual.querySelector('input, button, select');
+                        firstInput?.focus();
+                    },
+                    50);
+            }
+
             scope.actualModel = JSON.parse(modelJson);
             scope.actualModel.view = innerView;
 
             scope.shadowModel = JSON.parse(modelJson);
             scope.shadowModel.view = innerView;
 
-            let fallbackValue = null;
-            let values = [];
-            let props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
+            scope.fallback = isBlank(scope.model.value);
 
             function evaluate() {
                 fallbackValue = null;
