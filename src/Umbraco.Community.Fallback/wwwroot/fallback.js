@@ -59,7 +59,6 @@
                             let rule = chain[i];
                             let parts = rule.value.split('.');
                             if (!parts || parts.length !== 2) return;
-                            // TODO: Watch or just contiously digest?
                             if (parts[0] === 'content' && !isBlank(content[parts[1]])) {
                                 fallbackValue = content[parts[1]];
                                 break;
