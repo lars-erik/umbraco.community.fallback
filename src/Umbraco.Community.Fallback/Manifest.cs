@@ -25,9 +25,14 @@ namespace Umbraco.Community.Fallback
             manifests.Add(new PackageManifest
             {
                 PackageName = "Umbraco Community Fallback",
+                Stylesheets = new []
+                {
+                    "/App_Plugins/Umbraco.Community.Fallback/data-list.editor.css",
+                },
                 Scripts = new []
                 {
-                    "/App_Plugins/Umbraco.Community.Fallback/fallback.js"
+                    "/App_Plugins/Umbraco.Community.Fallback/fallback.js",
+                    "/App_Plugins/Umbraco.Community.Fallback/contentment.js",
                 }
             });
         }

@@ -21,6 +21,7 @@ public class FallbackEditor : IDataEditor
     private readonly IDataTypeService dataTypeService;
     private readonly IShortStringHelper shortStringHelper;
     private readonly IJsonSerializer jsonSerializer;
+    private readonly IContentTypeService contentTypeService;
     private readonly IHttpContextAccessor httpContextAccessor;
     private IDataValueEditor innerEditor;
     private ShadowEditor shadowedEditor;
@@ -32,6 +33,7 @@ public class FallbackEditor : IDataEditor
         IShortStringHelper shortStringHelper,
         IJsonSerializer jsonSerializer,
         IDataValueEditorFactory dataValueEditorFactory, 
+        IContentTypeService contentTypeService,
         IHttpContextAccessor httpContextAccessor,
         EditorType type = EditorType.PropertyValue
     )
@@ -41,6 +43,7 @@ public class FallbackEditor : IDataEditor
         this.dataTypeService = dataTypeService;
         this.shortStringHelper = shortStringHelper;
         this.jsonSerializer = jsonSerializer;
+        this.contentTypeService = contentTypeService;
         this.httpContextAccessor = httpContextAccessor;
     }
 
@@ -62,7 +65,7 @@ public class FallbackEditor : IDataEditor
 
     public IConfigurationEditor GetConfigurationEditor()
     {
-        var editor = new FallbackConfigurationEditor(this, propertyEditors, dataTypeService, localizedTextService, innerEditor, httpContextAccessor);
+        var editor = new FallbackConfigurationEditor(this, propertyEditors, dataTypeService, localizedTextService, innerEditor, httpContextAccessor, contentTypeService);
         return editor;
     }
 

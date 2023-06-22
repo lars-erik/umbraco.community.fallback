@@ -34,7 +34,6 @@ angular.module('umbraco').controller('umbraco.community.fallback.configuration.c
                     scope.value = newValue;
                     http.get('/umbraco/backoffice/api/fallback/editormodel?dataTypeId=' + newValue)
                         .then(response => {
-                            console.log(response.data);
                             scope.ultimateFallback = response.data;
                             if (initial) {
                                 scope.ultimateFallback.value = initialValue;
@@ -48,3 +47,9 @@ angular.module('umbraco').controller('umbraco.community.fallback.configuration.c
             });
         }
     ]);
+
+angular.module('umbraco').controller('umbraco.community.fallback.chain.controller', [
+    '$scope',
+    function (scope) {
+    }
+])

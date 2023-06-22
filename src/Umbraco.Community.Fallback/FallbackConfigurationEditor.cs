@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -15,6 +16,7 @@ public class FallbackConfigurationEditor : ConfigurationEditor
     private readonly ILocalizedTextService localizedTextService;
     private readonly IDataValueEditor dataValueEditor;
     private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly IContentTypeService contentTypeService;
 
     public const string DataTypeKey = "dataType";
     public const string FallbackKey = "fallbackTemplate";
@@ -23,12 +25,13 @@ public class FallbackConfigurationEditor : ConfigurationEditor
     private const string InnerViewKey = "fallback-inner-view";
 
     public FallbackConfigurationEditor(
-        FallbackEditor fallbackEditor, 
+        FallbackEditor fallbackEditor,
         PropertyEditorCollection propertyEditors,
         IDataTypeService dataTypeService,
         ILocalizedTextService localizedTextService,
         IDataValueEditor dataValueEditor,
-        IHttpContextAccessor httpContextAccessor
+        IHttpContextAccessor httpContextAccessor,
+        IContentTypeService contentTypeService
     )
     {
         this.fallbackEditor = fallbackEditor;
@@ -37,6 +40,7 @@ public class FallbackConfigurationEditor : ConfigurationEditor
         this.localizedTextService = localizedTextService;
         this.dataValueEditor = dataValueEditor;
         this.httpContextAccessor = httpContextAccessor;
+        this.contentTypeService = contentTypeService;
 
         Fields.Add(new ConfigurationField
         {
@@ -51,6 +55,46 @@ public class FallbackConfigurationEditor : ConfigurationEditor
                 {"type", Constants.Applications.Settings},
                 {"treeAlias", Constants.Trees.DataTypes},
                 {"idType", "id"}
+            }
+        });
+
+        var allProperties = new object[]
+        {
+            new
+            {
+                Name = "Content",
+                Alias = "content",
+                Properties = new[]
+                {
+                    new { Alias = "name", Name = "Name" },
+                    new { Alias = "createdBy", Name = "Created By" },
+                    new { Alias = "createdDate", Name = "Created Date" },
+                    new { Alias = "publishDate", Name = "Publish Date" },
+                }
+            }
+        }.Union(
+            contentTypeService.GetAll()
+            .Where(x => !x.IsElement)
+            .Select(x => 
+                new
+                {
+                    x.Alias,
+                    x.Name,
+                    Properties = x.PropertyTypes.Select(x => new { x.Alias, x.Name })
+                }
+            )
+        );
+
+        Fields.Add(new ConfigurationField
+        {
+            Key = "fallbackChain",
+            Name = localizedTextService.Localize(LocalizationAreaKey, "labelFallbackChain"),
+            Description = localizedTextService.Localize(LocalizationAreaKey, "descriptionFallbackChain"),
+            //View = "/umbraco/views/propertyeditors/blocklist/blocklist.html",
+            View = "/App_Plugins/Umbraco.Community.Fallback/fallback-chain.html",
+            Config = new Dictionary<string, object>
+            {
+                { "properties", allProperties }
             }
         });
 

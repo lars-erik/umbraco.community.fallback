@@ -1,0 +1,54 @@
+﻿﻿
+<!-- Copyright © 2020 Lee Kelleher.
+  - This Source Code Form is subject to the terms of the Mozilla Public
+  - License, v. 2.0. If a copy of the MPL was not distributed with this
+  - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+
+<div class="contentment" ng-controller="Umbraco.Community.Fallback.ListEditorController as vm">
+    <div ng-if="vm.notes" class="umb-readonlyvalue" lk-bind-html-template="vm.notes"></div>
+
+    <div ui-sortable="vm.sortableOptions" ng-model="model.value">
+        <div class="lk-data-list-item" ng-repeat="item in model.value">
+
+            <umb-icon icon="icon-navigation" class="lk-data-list-item__handle" aria-label="Sort"></umb-icon>
+
+            <div class="lk-data-list-item__text">
+                <div class="flex items-between">
+                    <select ng-model="item.value" style="width: 100%;">
+                        <optgroup ng-repeat="docType in model.config.properties" label="{{docType.Name}}">
+                            <option ng-repeat="prop in docType.Properties" value="{{docType.Alias + '.' + prop.Alias}}">{{prop.Name}}</option>
+                        </optgroup>
+                    </select>
+                    <select ng-model="item.fallback" style="width: 100%; margin-left: 10px;">
+                        <option value="">Self only</option>
+                        <option>Ancestors</option>
+                        <option>Default language</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="lk-data-list-item__remove">
+                <button aria-label="Delete item"
+                        type="button"
+                        class="btn-reset umb-outline"
+                        ng-click="vm.remove($index)">
+                    <umb-icon icon="icon-trash" class="icon"></umb-icon>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <button type="button"
+            class="umb-node-preview-add"
+            id="{{model.alias}}"
+            aria-label="Add item"
+            ng-click="vm.add()"
+            ng-if="vm.allowAdd">
+        <span>Add item</span>
+        <span class="sr-only">...</span>
+    </button>
+    
+    <pre>{{model.value}}</pre>
+
+</div>
