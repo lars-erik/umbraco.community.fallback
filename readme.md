@@ -1,6 +1,6 @@
 ## Umbraco Community Fallback
 
-A universal fallback data types that adapts other data types.  
+A universal fallback data type that adapts other data types.  
 Do your editors have to copy and paste a lot for listings and SEO texts?  
 Do they often forget to add an image so the page layout is messed up?  
 Fret not, here's the package to solve all your needs.
