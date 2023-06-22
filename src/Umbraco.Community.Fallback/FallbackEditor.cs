@@ -10,8 +10,8 @@ namespace Umbraco.Community.Fallback;
 
 public class FallbackEditor : IDataEditor
 {
-    const string DataEditorAlias = "Umbraco.Community.FallbackProperty";
-    const string DataEditorName = "Fallback Property";
+    public const string DataEditorAlias = "Umbraco.Community.FallbackProperty";
+    public const string DataEditorName = "Fallback Property";
     public const string DefaultInnerViewPath = "readonlyvalue";
     public const string PreviewPath = "/App_Plugins/Umbraco.Community.Fallback/fallback-preview.html";
     const string DataEditorIcon = "icon-user";
@@ -22,7 +22,6 @@ public class FallbackEditor : IDataEditor
     private readonly IShortStringHelper shortStringHelper;
     private readonly IJsonSerializer jsonSerializer;
     private readonly IContentTypeService contentTypeService;
-    private readonly IHttpContextAccessor httpContextAccessor;
     private IDataValueEditor innerEditor;
     private ShadowEditor shadowedEditor;
 
@@ -34,7 +33,6 @@ public class FallbackEditor : IDataEditor
         IJsonSerializer jsonSerializer,
         IDataValueEditorFactory dataValueEditorFactory, 
         IContentTypeService contentTypeService,
-        IHttpContextAccessor httpContextAccessor,
         EditorType type = EditorType.PropertyValue
     )
     {
@@ -44,7 +42,6 @@ public class FallbackEditor : IDataEditor
         this.shortStringHelper = shortStringHelper;
         this.jsonSerializer = jsonSerializer;
         this.contentTypeService = contentTypeService;
-        this.httpContextAccessor = httpContextAccessor;
     }
 
     public string Name => DataEditorName;
@@ -65,7 +62,7 @@ public class FallbackEditor : IDataEditor
 
     public IConfigurationEditor GetConfigurationEditor()
     {
-        var editor = new FallbackConfigurationEditor(this, propertyEditors, dataTypeService, localizedTextService, innerEditor, httpContextAccessor, contentTypeService);
+        var editor = new FallbackConfigurationEditor(this, propertyEditors, dataTypeService, localizedTextService, innerEditor, contentTypeService);
         return editor;
     }
 

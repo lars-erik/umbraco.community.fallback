@@ -8,5 +8,7 @@ public class ManifestComposer : IComposer
     public void Compose(IUmbracoBuilder builder)
     {
         builder.ManifestFilters().Append<Manifest>();
+
+        builder.PropertyValueConverters().Insert<FallbackPropertyValueConverter>(0);
     }
 }

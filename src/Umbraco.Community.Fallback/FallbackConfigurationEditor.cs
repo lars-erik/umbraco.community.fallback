@@ -15,7 +15,6 @@ public class FallbackConfigurationEditor : ConfigurationEditor
     private readonly IDataTypeService dataTypeService;
     private readonly ILocalizedTextService localizedTextService;
     private readonly IDataValueEditor dataValueEditor;
-    private readonly IHttpContextAccessor httpContextAccessor;
     private readonly IContentTypeService contentTypeService;
 
     public const string DataTypeKey = "dataType";
@@ -23,6 +22,7 @@ public class FallbackConfigurationEditor : ConfigurationEditor
 
     private const string LocalizationAreaKey = "fallbackProperty";
     private const string InnerViewKey = "fallback-inner-view";
+    public const string FallbackChainKey = "fallbackChain";
 
     public FallbackConfigurationEditor(
         FallbackEditor fallbackEditor,
@@ -30,7 +30,6 @@ public class FallbackConfigurationEditor : ConfigurationEditor
         IDataTypeService dataTypeService,
         ILocalizedTextService localizedTextService,
         IDataValueEditor dataValueEditor,
-        IHttpContextAccessor httpContextAccessor,
         IContentTypeService contentTypeService
     )
     {
@@ -39,7 +38,6 @@ public class FallbackConfigurationEditor : ConfigurationEditor
         this.dataTypeService = dataTypeService;
         this.localizedTextService = localizedTextService;
         this.dataValueEditor = dataValueEditor;
-        this.httpContextAccessor = httpContextAccessor;
         this.contentTypeService = contentTypeService;
 
         Fields.Add(new ConfigurationField
@@ -87,7 +85,7 @@ public class FallbackConfigurationEditor : ConfigurationEditor
 
         Fields.Add(new ConfigurationField
         {
-            Key = "fallbackChain",
+            Key = FallbackChainKey,
             Name = localizedTextService.Localize(LocalizationAreaKey, "labelFallbackChain"),
             Description = localizedTextService.Localize(LocalizationAreaKey, "descriptionFallbackChain"),
             //View = "/umbraco/views/propertyeditors/blocklist/blocklist.html",
@@ -145,9 +143,6 @@ public class FallbackConfigurationEditor : ConfigurationEditor
                 {
                     config2?.Add(FallbackKey, config[FallbackKey]);
                 }
-
-                var ctx = httpContextAccessor.HttpContext;
-                var qs = ctx?.Request.QueryString;
 
                 return config2!;
             }
