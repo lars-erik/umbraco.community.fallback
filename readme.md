@@ -27,6 +27,6 @@ A lot of this code is based on
 * [@lottepitcher](https://github.com/lottepitcher)'s code in [Admin Only Property](https://github.com/LottePitcher/umbraco-admin-only-property) which totally sparked this idea!
 * [@leekelleher](https://github.com/leekelleher)'s code in [Contentment]() and Adnim Only which totally powers 50%+ of this package.
 
-Honorable mention, inspiration and motivation goes to
+Honorable mention for inspiration, motivation and a brief code flirt goes to
 
 * [@deanleigh](https://github.com/deanleigh) et. al. for [Wholething Fallback Text Property](https://github.com/wholething/wholething-fallback-text-property).
