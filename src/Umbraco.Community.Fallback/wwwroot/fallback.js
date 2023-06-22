@@ -18,8 +18,8 @@
                 const chain = scope.model?.config?.fallbackChain;
 
                 const elementScope = angularHelper.traverseScopeChain(scope, s => s.hasOwnProperty('content'));
-                const content = elementScope.content;
-                const props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
+                const content = elementScope?.content;
+                const props = content?.tabs.reduce((c, n) => c.concat(n.properties), []);
 
                 const actions = [
                     {
@@ -54,7 +54,7 @@
                 function evaluate() {
                     let fallbackValue = null;
 
-                    if (chain && chain.length) {
+                    if (content && chain && chain.length) {
                         for (let i = 0; i < chain.length; i++) {
                             let rule = chain[i];
                             let parts = rule.value.split('.');
@@ -106,29 +106,30 @@
 
                 scope.fallback = isBlank(scope.model.value);
 
-                [
-                    'name',
-                    'createdBy',
-                    'createdDate',
-                    'publishedDate'
-                ].forEach(x => scope.$watch(() => content[x], evaluate));
+                if (content) {
+                    [
+                        'name',
+                        'createdBy',
+                        'createdDate',
+                        'publishedDate'
+                    ].forEach(x => scope.$watch(() => content[x], evaluate));
 
-                props.forEach(x => scope.$watch(() => x.value, evaluate));
+                    props.forEach(x => scope.$watch(() => x.value, evaluate));
 
-                scope.$watch("actualModel.value",
-                    function () {
-                        let isFallback = isBlank(scope.actualModel.value);
-                        scope.model.value = scope.actualModel.value;
-                        scope.fallback = isFallback;
-                        actions[0].isDisabled = isFallback;
+                    scope.$watch("actualModel.value",
+                        function () {
+                            let isFallback = isBlank(scope.actualModel.value);
+                            scope.model.value = scope.actualModel.value;
+                            scope.fallback = isFallback;
+                            actions[0].isDisabled = isFallback;
 
-                        if (scope.umbProperty && scope.umbProperty.propertyActions.filter(x => x.labelKey.indexOf('fallback_') === 0).length === 0) {
-                            scope.umbProperty.setPropertyActions(
-                                scope.umbProperty.propertyActions.concat(actions)
-                            );
-                        }
-                    }, true);
-
+                            if (scope.umbProperty && scope.umbProperty.propertyActions.filter(x => x.labelKey.indexOf('fallback_') === 0).length === 0) {
+                                scope.umbProperty.setPropertyActions(
+                                    scope.umbProperty.propertyActions.concat(actions)
+                                );
+                            }
+                        }, true);
+                }
                 evaluate();
             }
         ]);
