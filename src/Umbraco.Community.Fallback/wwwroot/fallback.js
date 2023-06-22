@@ -1,8 +1,9 @@
 ﻿(function() {
 function isBlank(value) {
     return value === undefined ||
-        value === null ||
-        value === "" ||
+        value === null ||       // really null
+        value === "" ||         // empty string
+        value?.length === 0 ||  // empty array
         value === "1900-01-01"; // TODO: Figure mindate pattern
 }
 
@@ -11,38 +12,42 @@ angular.module('umbraco').controller('umbraco.community.fallback.controller',
         '$scope',
         'angularHelper',
         function (scope, angularHelper) {
-            let innerView = scope.model.config['fallback-inner-view'];
-            let modelJson = JSON.stringify(scope.model);
-            let chain = scope.model?.config?.fallbackChain;
+            const innerView = scope.model.config['fallback-inner-view'];
+            const modelJson = JSON.stringify(scope.model);
+            const chain = scope.model?.config?.fallbackChain;
 
-            let elementScope = angularHelper.traverseScopeChain(scope, s => s.hasOwnProperty('content'));
-            let content = elementScope.content;
+            const elementScope = angularHelper.traverseScopeChain(scope, s => s.hasOwnProperty('content'));
+            const content = elementScope.content;
+            const props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
 
-            let fallbackValue = null;
-            let values = [];
-            let props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
+            const actions = [
+                {
+                    labelKey: 'fallback_resetToFallback',
+                    labelTokens: [],
+                    icon: 'arrow-left',
+                    method: reset,
+                    isDisabled: false
+                },
+                {
+                    labelKey: 'fallback_copyFallback',
+                    labelTokens: [],
+                    icon: 'documents',
+                    method: copy,
+                    isDisabled: false
+                },
+            ];
 
-            scope.edit = function(evt) {
-                scope.fallback = false;
-                let target = evt.target;
-                setTimeout(() => {
-                        let actual = target.closest('.fallback-container').querySelector('.actual');
-                        let firstInput = actual.querySelector('input, button, select');
-                        firstInput?.focus();
-                    },
-                    50);
+            function reset() {
+                scope.actualModel.value = null;
             }
 
-            scope.actualModel = JSON.parse(modelJson);
-            scope.actualModel.view = innerView;
-
-            scope.shadowModel = JSON.parse(modelJson);
-            scope.shadowModel.view = innerView;
-
-            scope.fallback = isBlank(scope.model.value);
+            function copy() {
+                scope.actualModel.value = JSON.parse(JSON.stringify(scope.shadowModel.value));
+            }
 
             function evaluate() {
-                fallbackValue = null;
+                let fallbackValue = null;
+
                 if (chain && chain.length) {
                     for (let i = 0; i < chain.length; i++) {
                         let rule = chain[i];
@@ -69,7 +74,30 @@ angular.module('umbraco').controller('umbraco.community.fallback.controller',
                 scope.shadowModel.value = fallbackValue;
             }
 
-            evaluate();
+            this.$onInit = function() {
+                if (scope.umbProperty) {
+                    scope.umbProperty.setPropertyActions(actions);
+                }
+            }
+
+            scope.edit = function(evt) {
+                scope.fallback = false;
+                let target = evt.target;
+                setTimeout(() => {
+                        let actual = target.closest('.fallback-container').querySelector('.actual');
+                        let firstInput = actual.querySelector('input, button, select');
+                        firstInput?.focus();
+                    },
+                    50);
+            }
+
+            scope.actualModel = JSON.parse(modelJson);
+            scope.actualModel.view = innerView;
+
+            scope.shadowModel = JSON.parse(modelJson);
+            scope.shadowModel.view = innerView;
+
+            scope.fallback = isBlank(scope.model.value);
 
             [
                 'name',
@@ -81,9 +109,20 @@ angular.module('umbraco').controller('umbraco.community.fallback.controller',
             props.forEach(x => scope.$watch(() => x.value, evaluate));
 
             scope.$watch("actualModel.value",
-                function() {
+                function () {
+                    let isFallback = isBlank(scope.actualModel.value);
                     scope.model.value = scope.actualModel.value;
+                    scope.fallback = isFallback;
+                    actions[0].isDisabled = isFallback;
+
+                    if (scope.umbProperty && scope.umbProperty.propertyActions.filter(x => x.labelKey.indexOf('fallback_') === 0).length === 0) {
+                        scope.umbProperty.setPropertyActions(
+                            scope.umbProperty.propertyActions.concat(actions)
+                        );
+                    }
                 }, true);
+
+            evaluate();
         }
     ]);
 

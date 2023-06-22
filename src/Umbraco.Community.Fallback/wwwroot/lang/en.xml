@@ -8,4 +8,8 @@
         <key alias="labelFallback">Ultimate fallback</key>
         <key alias="descriptionFallback">If all else fails, this will be the value</key>
     </area>
+    <area alias="fallback">
+        <key alias="resetToFallback">Reset to fallback</key>
+        <key alias="copyFallback">Copy from fallback</key>
+    </area>
 </language>
