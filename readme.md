@@ -1,12 +1,19 @@
 ## Umbraco Community Fallback
 
-An effort to combine Admin Only Property shadowing with Wholething Fallback.
+A universal fallback data types that adapts other data types.  
+Do your editors have to copy and paste a lot for listings and SEO texts?  
+Do they often forget to add an image so the page layout is messed up?  
+Fret not, here's the package to solve all your needs.
 
-To be continued!
+Here's a short demo:
 
-Creds to
+[Umbraco Community Fallback Property - First Glance](https://youtu.be/01oiT-3QhBg)
 
-* [@deanleigh](https://github.com/deanleigh)
-* [@leekelleher](https://github.com/leekelleher)
-* [@lottepitcher](https://github.com/lottepitcher)
-* (and more. pm me if you should be here.)
+A lot of this code is based on
+
+* [@lottepitcher](https://github.com/lottepitcher)'s code in [Admin Only Property](https://github.com/LottePitcher/umbraco-admin-only-property) which totally sparked this idea!
+* [@leekelleher](https://github.com/leekelleher)'s code in [Contentment]() and Adnim Only which totally powers 50%+ of this package.
+
+Honorable mention, inspiration and motivation goes to
+
+* [@deanleigh](https://github.com/deanleigh) et. al. for [Wholething Fallback Text Property](https://github.com/wholething/wholething-fallback-text-property).
