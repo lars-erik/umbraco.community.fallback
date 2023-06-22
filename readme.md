@@ -7,8 +7,6 @@ Fret not, here's the package to solve all your needs.
 
 Here's a short demo:
 
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/01oiT-3QhBg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
 [Umbraco Community Fallback Property - First Glance](https://www.youtube.com/watch?v=01oiT-3QhBg)
 
 A lot of this code is based on
