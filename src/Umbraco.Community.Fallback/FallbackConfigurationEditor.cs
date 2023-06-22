@@ -18,11 +18,13 @@ public class FallbackConfigurationEditor : ConfigurationEditor
     private readonly IContentTypeService contentTypeService;
 
     public const string DataTypeKey = "dataType";
+
+    // TODO: Should be ultimateFallback
     public const string FallbackKey = "fallbackTemplate";
+    public const string FallbackChainKey = "fallbackChain";
 
     private const string LocalizationAreaKey = "fallbackProperty";
     private const string InnerViewKey = "fallback-inner-view";
-    public const string FallbackChainKey = "fallbackChain";
 
     public FallbackConfigurationEditor(
         FallbackEditor fallbackEditor,
@@ -142,6 +144,11 @@ public class FallbackConfigurationEditor : ConfigurationEditor
                 if (config2 != null && config.ContainsKey(FallbackKey) && !config2.ContainsKey(FallbackKey))
                 {
                     config2?.Add(FallbackKey, config[FallbackKey]);
+                }
+
+                if (config2 != null && config.ContainsKey(FallbackChainKey) && !config2.ContainsKey(FallbackChainKey))
+                {
+                    config2?.Add(FallbackChainKey, config[FallbackChainKey]);
                 }
 
                 return config2!;

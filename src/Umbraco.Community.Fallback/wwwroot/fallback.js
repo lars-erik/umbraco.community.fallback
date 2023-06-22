@@ -1,16 +1,70 @@
-﻿angular.module('umbraco').controller('umbraco.community.fallback.controller',
+﻿(function() {
+function isBlank(value) {
+    return value === undefined ||
+        value === null ||
+        value === "" ||
+        value === "1900-01-01"; // TODO: Figure mindate pattern
+}
+
+angular.module('umbraco').controller('umbraco.community.fallback.controller',
     [
         '$scope',
-        function (scope) {
+        'angularHelper',
+        function (scope, angularHelper) {
             let innerView = scope.model.config['fallback-inner-view'];
             let modelJson = JSON.stringify(scope.model);
+            let chain = scope.model?.config?.fallbackChain;
+
+            let elementScope = angularHelper.traverseScopeChain(scope, s => s.hasOwnProperty('content'));
+            let content = elementScope.content;
 
             scope.actualModel = JSON.parse(modelJson);
             scope.actualModel.view = innerView;
 
             scope.shadowModel = JSON.parse(modelJson);
             scope.shadowModel.view = innerView;
-            scope.shadowModel.value = scope.model.config.fallbackTemplate;
+
+            let fallbackValue = null;
+            let values = [];
+            let props = content.tabs.reduce((c, n) => c.concat(n.properties), []);
+
+            function evaluate() {
+                if (chain && chain.length) {
+                    for (let i = 0; i < chain.length; i++) {
+                        let rule = chain[i];
+                        let parts = rule.value.split('.');
+                        if (!parts || parts.length !== 2) return;
+                        // TODO: Watch or just contiously digest?
+                        if (parts[0] === 'content' && !isBlank(content[parts[1]])) {
+                            fallbackValue = content[parts[1]];
+                            break;
+                        } else {
+                            let prop = props.filter(x => x.alias === parts[1])[0];
+                            if (isBlank(prop?.value)) continue;
+                            fallbackValue = prop.value;
+                            break;
+                        }
+                    };
+                }
+
+                if (isBlank(fallbackValue)) {
+                    // Is really ultimateFallback
+                    fallbackValue = scope.model.config.fallbackTemplate;
+                }
+
+                scope.shadowModel.value = fallbackValue;
+            }
+
+            evaluate();
+
+            [
+                'name',
+                'createdBy',
+                'createdDate',
+                'publishedDate'
+            ].forEach(x => scope.$watch(() => content[x], evaluate));
+
+            props.forEach(x => scope.$watch(() => x.value, evaluate));
 
             scope.$watch("actualModel.value",
                 function() {
@@ -48,8 +102,10 @@ angular.module('umbraco').controller('umbraco.community.fallback.configuration.c
         }
     ]);
 
-angular.module('umbraco').controller('umbraco.community.fallback.chain.controller', [
-    '$scope',
-    function (scope) {
-    }
-])
+angular.module('umbraco').controller('umbraco.community.fallback.chain.controller',
+    [
+        '$scope',
+        function(scope) {
+        }
+    ]);
+})();
