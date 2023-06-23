@@ -4,3 +4,45 @@
 @{
 	Layout = null;
 }
+
+<html>
+<head>
+    <title>@Model.SeoTitle</title>
+    <meta name="description" content="@Model.SeoDescription"/>
+    <meta name="og:image" content="@Model.OpenGraphImage.Url(mode:UrlMode.Absolute)" />
+</head>
+<body style="max-width: 1200px; margin: auto; margin-top: 20px; font-family: sans-serif;">
+<section>
+    
+    <h2>Head content</h2>
+    <pre>
+&lt;title&gt;@Model.SeoTitle&lt;/title&gt;
+&lt;meta name="description" content="@Model.SeoDescription" /&gt;
+&lt;meta name="og:image" content="@Model.OpenGraphImage.Url(mode:UrlMode.Absolute)" /&gt;
+    </pre>
+
+    <h2>Listing view</h2>
+    <div style="display: flex; justify-content: space-evenly;">
+        <div style="margin-right: 10px;">
+            <img src="@Model.ListImage?.Url()" width="200"/>
+        </div>
+        <div style="width: 100%;">
+            <h3>@Model.ListTitle</h3>
+            <p>@Model.ListSummary</p>
+        </div>
+    </div>
+
+    <h2>Content view</h2>
+    <div>
+        <div>
+            <img src="@Model.ListImage?.Url()" width="100%"/>
+        </div>
+        <div style="width: 100%;">
+            <h1>@Model.Heading</h1>
+            <p><strong>@Model.Summary</strong></p>
+            @Html.Raw(Model.Body)
+        </div>
+    </div>
+</section>
+</body>
+</html>

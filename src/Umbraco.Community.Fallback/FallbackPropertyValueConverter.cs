@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -62,7 +63,7 @@ namespace Umbraco.Community.Fallback
                                 var value = prop?.GetValue();
                                 if (!IsBlank(value))
                                 {
-                                    return publishedPropertyType.ConvertInterToObject(owner, referenceCacheLevel, value, preview);
+                                    return value;
                                 }
                             }
                         }
@@ -86,7 +87,8 @@ namespace Umbraco.Community.Fallback
         {
             return value == null
                    || "".Equals(value)
-                   || DateTime.MinValue.Equals(value);
+                   || DateTime.MinValue.Equals(value)
+                   || (value is IEnumerable enumerable && !enumerable.Cast<object>().Any());
         }
 
         public override object? ConvertIntermediateToXPath(IPublishedElement owner, IPublishedPropertyType propertyType, PropertyCacheLevel referenceCacheLevel, object? inter, bool preview)

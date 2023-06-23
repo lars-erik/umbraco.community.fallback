@@ -18,7 +18,8 @@ Here's a short demo:
 - Extendable transformation strategies (other datatypes than text)
 - Prevent stack overflow, browser freezes and crashes (!)  
   (It is currently possible to fall back to "self" or subsequently through "self")
-
+- What happens in blocks?
+- What happens with variants?
 
 ### Credits
 
