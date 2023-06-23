@@ -2,6 +2,9 @@ name: Umbraco Community Fallback
 
 on: [push]
 
+env:
+  SourceFolder: src/Umbraco.Community.Fallback
+
 jobs:
   build:
 
@@ -19,7 +22,10 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Install dependencies
-        run: dotnet restore src/Umbraco.Community.Fallback
+        run: dotnet restore $SourceFolder
 
       - name: Build
-        run: dotnet build src/Umbraco.Community.Fallback --configuration Release --no-restore
+        run: dotnet build $SourceFolder --configuration Release --no-restore
+
+      - name: Create the package
+        run: dotnet pack --configuration Release $SourceFolder
