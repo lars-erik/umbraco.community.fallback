@@ -11,12 +11,13 @@
     <PackageId>Umbraco.Community.Fallback</PackageId>
     <Product>Umbraco.Community.Fallback</Product>
     <Title>Umbraco.Community.Fallback</Title>
-    <Description>...</Description>
+    <Description>A universal fallback property for Umbraco</Description>
     <PackageTags>umbraco plugin package</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <ProjectUrl>https://github.com/lars-erik/umbraco.community.fallback</ProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Handlebars.Net" Version="2.1.4" />
     <PackageReference Include="Umbraco.Cms.Web.Website" Version="11.4.0" />
     <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.4.0" />
   </ItemGroup>
