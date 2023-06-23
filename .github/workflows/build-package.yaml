@@ -1,9 +1,13 @@
 name: Umbraco Community Fallback
 
-on: [push]
+on: 
+  push:
+    branches:
+      - 'main'
 
 env:
   SourceFolder: src/Umbraco.Community.Fallback
+  NuGetDirectory: ${{ github.workspace }}/nuget
 
 jobs:
   build:
@@ -43,4 +47,7 @@ jobs:
         run: dotnet build $SourceFolder --configuration Release --no-restore
 
       - name: Create the package
-        run: dotnet pack --configuration Release $SourceFolder -p:PackageVersion=${{steps.version.outputs.version}}
+        run: dotnet pack --configuration Release $SourceFolder -p:PackageVersion=${{steps.version.outputs.version}} --output ${{ env.NuGetDirectory }}
+
+      - name: Push the package
+        run: dotnet push ${{SourceFolder}}/bin/Release/net7.0/Umbraco.Community.Fallback.${{steps.version.outputs.version}}.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key "${{ secrets.NUGET_APIKEY}}"
