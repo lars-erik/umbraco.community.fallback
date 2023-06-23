@@ -50,4 +50,4 @@ jobs:
         run: dotnet pack --configuration Release $SourceFolder -p:PackageVersion=${{steps.version.outputs.version}} --output ${{ env.NuGetDirectory }}
 
       - name: Push the package
-        run: dotnet push ${{SourceFolder}}/bin/Release/net7.0/Umbraco.Community.Fallback.${{steps.version.outputs.version}}.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key "${{ secrets.NUGET_APIKEY}}"
+        run: dotnet push ${{$SourceFolder}}/bin/Release/net7.0/Umbraco.Community.Fallback.${{steps.version.outputs.version}}.nupkg --source https://api.nuget.org/v3/index.json --skip-duplicate --api-key "${{ secrets.NUGET_APIKEY}}"
