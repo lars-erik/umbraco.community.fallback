@@ -67,8 +67,7 @@ public class FallbackConfigurationEditor : ConfigurationEditor
                 Properties = new[]
                 {
                     new { Alias = "name", Name = "Name" },
-                    new { Alias = "createdBy", Name = "Created By" },
-                    new { Alias = "createdDate", Name = "Created Date" },
+                    new { Alias = "createDate", Name = "Created Date" },
                     new { Alias = "publishDate", Name = "Publish Date" },
                 }
             }

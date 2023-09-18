@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Cache;
+using Umbraco.Cms.Core.Models.Membership;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
@@ -20,7 +22,10 @@ namespace Umbraco.Community.Fallback
         private readonly IDataTypeService dataTypeService;
         private readonly IPublishedContentTypeFactory publishedContentTypeFactory;
 
-        public FallbackPropertyValueConverter(IDataTypeService dataTypeService, IPublishedContentTypeFactory publishedContentTypeFactory)
+        public FallbackPropertyValueConverter(
+            IDataTypeService dataTypeService, 
+            IPublishedContentTypeFactory publishedContentTypeFactory
+            )
         {
             this.dataTypeService = dataTypeService;
             this.publishedContentTypeFactory = publishedContentTypeFactory;
@@ -52,19 +57,16 @@ namespace Umbraco.Community.Fallback
                             if (parts.Length != 2) continue;
                             if (parts[0] == "content")
                             {
-                                var prop = owner.GetType().GetProperties()
-                                    .FirstOrDefault(x => x.Name.InvariantEquals(parts[1]));
-                                if (prop == null || IsBlank(prop.GetValue(owner))) continue;
-                                return prop.GetValue(owner);
+                                var ownerValue = GetOwnerValue(owner, parts);
+                                if (IsBlank(ownerValue)) continue;
+                                return ownerValue;
                             }
                             else
                             {
                                 var prop = owner.GetProperty(parts[1]);
                                 var value = prop?.GetValue();
-                                if (!IsBlank(value))
-                                {
-                                    return value;
-                                }
+                                if (IsBlank(value)) continue;
+                                return value;
                             }
                         }
                         catch
@@ -81,6 +83,16 @@ namespace Umbraco.Community.Fallback
             }
 
             return currentValue;
+        }
+
+        private object? GetOwnerValue(IPublishedElement owner, string[] parts)
+        {
+            return parts[1] switch
+            {
+                _ => owner.GetType().GetProperties()
+                        .FirstOrDefault(x => x.Name.InvariantEquals(parts[1]))?
+                        .GetValue(owner)
+            };
         }
 
         private static bool IsBlank(object? value)

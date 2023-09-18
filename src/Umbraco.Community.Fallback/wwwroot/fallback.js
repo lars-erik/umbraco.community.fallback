@@ -12,13 +12,15 @@
         [
             '$scope',
             'angularHelper',
-            function (scope, angularHelper) {
+            'editorState',
+            function (scope, angularHelper, editorState) {
                 const innerView = scope.model.config['fallback-inner-view'];
                 const modelJson = JSON.stringify(scope.model);
                 const chain = scope.model?.config?.fallbackChain;
 
                 const elementScope = angularHelper.traverseScopeChain(scope, s => s.hasOwnProperty('content'));
                 const content = elementScope?.content;
+                const fullContent = editorState.getCurrent();
                 const props = content?.tabs.reduce((c, n) => c.concat(n.properties), []);
 
                 const actions = [
@@ -108,9 +110,8 @@
                 if (content) {
                     [
                         'name',
-                        'createdBy',
-                        'createdDate',
-                        'publishedDate'
+                        'createDate',
+                        'publishDate'
                     ].forEach(x => scope.$watch(() => content[x], evaluate));
 
                     props.forEach(x => scope.$watch(() => x.value, evaluate));
